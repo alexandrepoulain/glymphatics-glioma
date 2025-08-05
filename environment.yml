@@ -337,5 +337,7 @@ dependencies:
       - flexparser==0.4
       - kiwisolver==1.4.8
       - pint==0.24.4
+      - scipy==1.15.3
       - typing-extensions==4.13.1
       - vtk==9.3.1
+prefix: /home/alexandre/anaconda3/envs/multicomp_glioma
