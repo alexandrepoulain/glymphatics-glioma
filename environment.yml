@@ -1,6 +1,7 @@
 name: multicomp_glioma
 channels:
   - conda-forge
+  - nodefaults
 dependencies:
   - _openmp_mutex=4.5=3_kmp_llvm
   - _x86_64-microarch-level=4=2_icelake
