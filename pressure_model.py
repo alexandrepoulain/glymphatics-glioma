@@ -40,7 +40,7 @@ class K_multcomp(UserExpression):
     def value_shape(self):
         return ()
 
-def pressure_model(Q, p, q, dx, ds, Kappa_f, Kappa_f_cytotoxic, Kappa_f_vasogenic, Kappa_f_tumor, gamma, gamma_cytotoxic, gamma_vasogenic, gamma_tumor, gamma_disrupt_veins, p_CSF, p_pial_pa, p_veins, gamma_pial_pa, gamma_pial_pv, gamma_pial_e, ncomp, results_path, mesh, VV,  save_pressure =False, dirichlet = True):
+def pressure_model(Q, p, q, dx, ds, Kappa_f, Kappa_f_cytotoxic, Kappa_f_vasogenic, Kappa_f_tumor, gamma, gamma_cytotoxic, gamma_vasogenic, gamma_tumor, gamma_disrupt_veins_vaso,gamma_disrupt_veins_tumo, p_CSF, p_pial_pa, p_veins, gamma_pial_pa, gamma_pial_pv, gamma_pial_e, ncomp, results_path, mesh, VV,  save_pressure =False, dirichlet = True):
     """This function defines and runs the pressure model
     Parameters:
        - Q (mixed FE space): the finite element spac for the pressure fields.
@@ -79,8 +79,8 @@ def pressure_model(Q, p, q, dx, ds, Kappa_f, Kappa_f_cytotoxic, Kappa_f_vasogeni
                 F -=  Constant(gamma_tumor[i][j])*inner((p[j]-p[i]),q[i])*dx(4)
             # addition of the fluid transfer between veins and vPVS (in tumor and vasogenic edema)
             if i == 2:
-                F -=  Constant(gamma_disrupt_veins)*inner((Constant(p_veins)-p[i]), q[i])*dx(3)
-                F -=  Constant(gamma_disrupt_veins)*inner((Constant(p_veins)-p[i]), q[i])*dx(4)
+                F -=  Constant(gamma_disrupt_veins_vaso)*inner((Constant(p_veins)-p[i]), q[i])*dx(3)
+                F -=  Constant(gamma_disrupt_veins_tumo)*inner((Constant(p_veins)-p[i]), q[i])*dx(4)
             
     # Robin Boundary conditions
     F -= gamma_pial_e*(Constant(p_CSF)*q[0]*ds - p[0]*q[0]*ds)

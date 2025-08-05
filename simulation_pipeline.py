@@ -81,7 +81,7 @@ def modulated_parameters(coefficients, ncomp, nu,
                         mod_phi_cytotoxic_e, mod_phi_cytotoxic_pa, mod_phi_cytotoxic_pv, 
                         mod_phi_vasogenic_e, mod_phi_vasogenic_pa, mod_phi_vasogenic_pv, 
                         mod_phi_tumor_e, mod_phi_tumor_pa, mod_phi_tumor_pv,
-                        mod_permea_veins, 
+                        mod_permea_veins_vaso,  mod_permea_veins_tumo,
                         mod_fluid_transfer_cytotoxic_pa_e, mod_fluid_transfer_cytotoxic_pv_e, 
                         mod_fluid_transfer_vasogenic_pa_e, mod_fluid_transfer_vasogenic_pv_e, 
                         mod_fluid_transfer_tumor_pa_e, mod_fluid_transfer_tumor_pv_e,
@@ -160,9 +160,12 @@ def modulated_parameters(coefficients, ncomp, nu,
     print("kappa_f_tumor = "+str(Kappa_f_tumor*nu))
 
     # Disruption of BBB
-    gamma_disrupt_veins = np.copy(w_vpv)*mod_permea_veins
+    gamma_disrupt_veins_vaso = np.copy(w_vpv)*mod_permea_veins_vaso
+    gamma_disrupt_veins_tumo = np.copy(w_vpv)*mod_permea_veins_tumo
 
-    print("gamma_disrupt_veins = " +str(gamma_disrupt_veins) )
+    print("gamma_disrupt_veins_vaso = " +str(gamma_disrupt_veins_vaso) )
+    print("gamma_disrupt_veins_tumo = " +str(gamma_disrupt_veins_tumo) )
+
     # disruption of AEF barrier                  
     w_pae = coefficients["convective_fluid_transfer"][("e","pa")]
     w_pve = coefficients["convective_fluid_transfer"][("e","pv")]
@@ -230,7 +233,7 @@ def modulated_parameters(coefficients, ncomp, nu,
     print("lmbd_tumor = " +str(lmbd_tumor))
     
     
-    return phi0_cytotoxic, phi0_vasogenic, phi0_tumor, Kappa_f_cytotoxic, Kappa_f_vasogenic, Kappa_f_tumor, gamma_disrupt_veins, gamma_cytotoxic, gamma_vasogenic, gamma_tumor, D_eff_cytotoxic_arr, D_eff_vasogenic_arr, D_eff_tumor_arr, lmbd_cytotoxic, lmbd_vasogenic, lmbd_tumor
+    return phi0_cytotoxic, phi0_vasogenic, phi0_tumor, Kappa_f_cytotoxic, Kappa_f_vasogenic, Kappa_f_tumor, gamma_disrupt_veins_vaso, gamma_disrupt_veins_tumo, gamma_cytotoxic, gamma_vasogenic, gamma_tumor, D_eff_cytotoxic_arr, D_eff_vasogenic_arr, D_eff_tumor_arr, lmbd_cytotoxic, lmbd_vasogenic, lmbd_tumor
     
     
 def prepare_simu(meshfile, finite_element_type, ncomp):
@@ -302,7 +305,7 @@ def prepare_simu(meshfile, finite_element_type, ncomp):
 def launch_script( mesh, dx, ds, geo, Q, VV, T, dt, results_path, finite_element_type, 
                             phi0, phi0_cytotoxic, phi0_vasogenic, phi0_tumor, 
                             Kappa_f, Kappa_f_cytotoxic, Kappa_f_vasogenic, Kappa_f_tumor, 
-                            gamma, gamma_cytotoxic, gamma_vasogenic, gamma_tumor, gamma_disrupt_veins, 
+                            gamma, gamma_cytotoxic, gamma_vasogenic, gamma_tumor, gamma_disrupt_veins_vaso, gamma_disrupt_veins_tumo,
                             D_eff_arr, D_eff_cytotoxic_arr, D_eff_vasogenic_arr, D_eff_tumor_arr, 
                             lmbd, lmbd_cytotoxic, lmbd_vasogenic, lmbd_tumor, l_e_pial,
                             comp, ncomp, solute, dirichlet_solute, dirichlet_pressure, healthy_volume, cytotoxic_volume, vasogenic_volume, tumor_volume, SD, save = True):
@@ -356,7 +359,7 @@ def launch_script( mesh, dx, ds, geo, Q, VV, T, dt, results_path, finite_element
     
 
     ### Presure model
-    p_new = pressure_model(Q, p, q, dx, ds, Kappa_f,Kappa_f_cytotoxic, Kappa_f_vasogenic, Kappa_f_tumor, gamma, gamma_cytotoxic, gamma_vasogenic, gamma_tumor, gamma_disrupt_veins, p_CSF, p_pial_pa, p_veins, gamma_pial_pa, gamma_pial_pv, gamma_pial_e, ncomp, results_path, mesh, VV,  save_pressure = save, dirichlet = dirichlet_pressure)
+    p_new = pressure_model(Q, p, q, dx, ds, Kappa_f,Kappa_f_cytotoxic, Kappa_f_vasogenic, Kappa_f_tumor, gamma, gamma_cytotoxic, gamma_vasogenic, gamma_tumor, gamma_disrupt_veins_vaso, gamma_disrupt_veins_tumo, p_CSF, p_pial_pa, p_veins, gamma_pial_pa, gamma_pial_pv, gamma_pial_e, ncomp, results_path, mesh, VV,  save_pressure = save, dirichlet = dirichlet_pressure)
     
     
     if save:
